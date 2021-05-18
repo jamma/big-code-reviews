@@ -1,7 +1,7 @@
 // +-------------------------------------------------------------------------------------------------------------------
-// + File: SetIntervalManager.cs
+// + File: ResourceProducer.cs
 // + Company: Zanzo Studios - http://zanzostudios.com
-// + Author: Michael McClenney at 14:30 on 2021/05/17
+// + Author: Michael McClenney at 21:57 on 2021/05/17
 // +
 // + Description:
 // +    Insert Description Here
@@ -14,32 +14,22 @@ using UnityEngine;
 namespace IdleStuff
 {
     // +---------------------------------------------------------------------------------------------------------------
-    // + Class: SetIntervalManager
+    // + Class: ResourceProducer
     // + Description:
     // +    Insert Description Here
     // +---------------------------------------------------------------------------------------------------------------
-    public class SetIntervalManager : UpdateIntervalManager
+    public class ResourceProducer
     {
         // Events & Delegates  ----------------------------------------------------------------------------------------
         // public delegate void ZanzoObjectNotify(ZanzoObject res);
         // public event ZanzoObjectNotify Activated;
-        // public delegate void UpdateNotify(float intervalTime, float totalElapsedTime);
-        // public event UpdateNotify UpdateProducer;
 
         // Static / Constants  ----------------------------------------------------------------------------------------
         // public static readonly int SomeConstant = 0;
-        public static readonly float SecondThreshold = 1;
-        // public static readonly float MinuteThreshold = 60;
-        // public static readonly float HourThreshold = 3600;
-
+        // public static readonly int SecondsBetweenUpdates = 9;
 
         // Private Members  -------------------------------------------------------------------------------------------
-        // private bool _somePrivateMember;
-        // private float 
-        private float _totalElapsedTime = 0;
-        private float _secondTimerElapsedTime = 0;
-        private float _minuteTimerElapsedTime = 0;
-        private float _hourTimerElapsedTime = 0;
+        private float _totalItems = 0;
 
         // Public Members  --------------------------------------------------------------------------------------------
         // public float dontDeclarePublicMembers;
@@ -59,36 +49,71 @@ namespace IdleStuff
         //         _somePrivateMember = value;
         //     }
         // }
-        // public ResourceProducer Producer { get; } = null;
-        // public float TimeScale { get; set; } = 1;
+        public float TotalItems { get; set; } = 0;
+        public float ItemsPerTick { get; set; } = GameplayController.DefaultItemsPerTick;
+        public int TotalUpdateCalls { get; set; } = 0;
 
         // C'tor & Init Methods  --------------------------------------------------------------------------------------
         // public override void Initialize() {}
         // public override void Reinitialize() {}
-        public SetIntervalManager()
-        {
-            // Producer = new SetIntervalProducer();
-            Producer = new ResourceProducer();
-            // Producer.ItemsPerTick = 1 / 9F;
-        }
 
         // Component Functionality  -----------------------------------------------------------------------------------
-        // public override void Update(float dt)
+        // public void SomeFunc()
         // {
-        //     _totalElapsedTime += dt;
-        //     _secondTimerElapsedTime += dt;
+        // }
+        public void Update(float intervalTime, float totalElapsedTime)
+        {
+            TotalUpdateCalls += 1;
+            TotalItems += ItemsPerTick;
+            // _secondsSinceLastUpdate += 1;
+            // if (_secondsSinceLastUpdate >= _ticksPerItem)
+            // {
+            //     // Do update
+            //     _secondsSinceLastUpdate = 0;
+            // }
+        }
 
-        //     while(_secondTimerElapsedTime >= 1)
-        //     {
-        //         UpdateProducer?.Invoke(_secondTimerElapsedTime - 1, _totalElapsedTime);
-        //         _secondTimerElapsedTime -= 1;
+        // private void SetItemsPerTick(float value)
+        // {
+        //     _itemsPerTick = value;
+        //     _ticksPerItem = 1 / _itemsPerTick;
+        // }
+        // Unity Life-Cycle Methods  ----------------------------------------------------------------------------------
+        // Order: https://docs.unity3d.com/Manual/ExecutionOrder.html
+        // void Awake()
+        // {
+        // }
 
-        //         if (_secondTimerElapsedTime < 1)
-        //         {
-        //             _secondTimerElapsedTime = 0;
-        //         }
-        //     }
+        // void OnEnable()
+        // {
+        // }
 
+        // void OnDisable()
+        // {
+        // }
+
+        // void Start()
+        // {
+        // }
+
+        // void Update()
+        // {
+        // }
+
+        // void FixedUpdate()
+        // {
+        // }
+
+        // void LateUpdate()
+        // {
+        // }
+
+        // void OnApplicationQuit()
+        // {
+        // }
+
+        // void OnDisable()
+        // {
         // }
     }
 }

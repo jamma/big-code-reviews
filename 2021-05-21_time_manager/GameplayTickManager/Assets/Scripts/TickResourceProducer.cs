@@ -1,7 +1,7 @@
 // // +-------------------------------------------------------------------------------------------------------------------
-// // + File: SetIntervalProducer.cs
+// // + File: TickResourceProducer.cs
 // // + Company: Zanzo Studios - http://zanzostudios.com
-// // + Author: Michael McClenney at 16:02 on 2021/05/17
+// // + Author: Michael McClenney at 16:01 on 2021/05/17
 // // +
 // // + Description:
 // // +    Insert Description Here
@@ -14,11 +14,11 @@
 // namespace IdleStuff
 // {
 //     // +---------------------------------------------------------------------------------------------------------------
-//     // + Class: SetIntervalProducer
+//     // + Class: TickResourceProducer
 //     // + Description:
 //     // +    Insert Description Here
 //     // +---------------------------------------------------------------------------------------------------------------
-//     public class SetIntervalProducer : ResourceProducer
+//     public class TickResourceProducer
 //     {
 //         // Events & Delegates  ----------------------------------------------------------------------------------------
 //         // public delegate void ZanzoObjectNotify(ZanzoObject res);
@@ -26,10 +26,9 @@
 
 //         // Static / Constants  ----------------------------------------------------------------------------------------
 //         // public static readonly int SomeConstant = 0;
-//         // public static readonly int SecondsBetweenUpdates = 9;
 
 //         // Private Members  -------------------------------------------------------------------------------------------
-//         private float _totalItems = 0;
+//         // private bool _somePrivateMember;
 
 //         // Public Members  --------------------------------------------------------------------------------------------
 //         // public float dontDeclarePublicMembers;
@@ -49,8 +48,7 @@
 //         //         _somePrivateMember = value;
 //         //     }
 //         // }
-//         public float TotalItems { get; set; } = 0;
-//         public float ItemsPerTick { get; set; } = GameplayController.DefaultItemsPerTick;
+//         public float ItemsPerSecond { get; set; } = 1;
 //         public int TotalUpdateCalls { get; set; } = 0;
 
 //         // C'tor & Init Methods  --------------------------------------------------------------------------------------
@@ -61,23 +59,7 @@
 //         // public void SomeFunc()
 //         // {
 //         // }
-//         public void Update(float intervalTime, float totalElapsedTime)
-//         {
-//             TotalUpdateCalls += 1;
-//             TotalItems += ItemsPerTick;
-//             // _secondsSinceLastUpdate += 1;
-//             // if (_secondsSinceLastUpdate >= _ticksPerItem)
-//             // {
-//             //     // Do update
-//             //     _secondsSinceLastUpdate = 0;
-//             // }
-//         }
 
-//         // private void SetItemsPerTick(float value)
-//         // {
-//         //     _itemsPerTick = value;
-//         //     _ticksPerItem = 1 / _itemsPerTick;
-//         // }
 //         // Unity Life-Cycle Methods  ----------------------------------------------------------------------------------
 //         // Order: https://docs.unity3d.com/Manual/ExecutionOrder.html
 //         // void Awake()
