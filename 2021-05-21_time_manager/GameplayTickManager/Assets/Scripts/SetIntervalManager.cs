@@ -25,21 +25,14 @@ namespace IdleStuff
         // public event ZanzoObjectNotify Activated;
         // public delegate void UpdateNotify(float intervalTime, float totalElapsedTime);
         // public event UpdateNotify UpdateProducer;
+        public delegate void UpdateNotify(float intervalTime, float totalElapsedTime);
+        public event UpdateNotify UpdateProducer;
 
         // Static / Constants  ----------------------------------------------------------------------------------------
-        // public static readonly int SomeConstant = 0;
-        public static readonly float SecondThreshold = 1;
-        // public static readonly float MinuteThreshold = 60;
-        // public static readonly float HourThreshold = 3600;
-
+        // public static readonly float UpdateIntervalSeconds = 1;
 
         // Private Members  -------------------------------------------------------------------------------------------
-        // private bool _somePrivateMember;
-        // private float 
-        private float _totalElapsedTime = 0;
-        private float _secondTimerElapsedTime = 0;
-        private float _minuteTimerElapsedTime = 0;
-        private float _hourTimerElapsedTime = 0;
+        private float updateIntervalElapsedTime = 0;
 
         // Public Members  --------------------------------------------------------------------------------------------
         // public float dontDeclarePublicMembers;
@@ -65,30 +58,34 @@ namespace IdleStuff
         // C'tor & Init Methods  --------------------------------------------------------------------------------------
         // public override void Initialize() {}
         // public override void Reinitialize() {}
-        public SetIntervalManager()
+        public SetIntervalManager() : base()
         {
+            // base();
             // Producer = new SetIntervalProducer();
-            Producer = new ResourceProducer();
+            Producer = new ResourceProducer("Set Interval Producer");
+            UpdateProducer += Producer.Update;
+
             // Producer.ItemsPerTick = 1 / 9F;
         }
 
         // Component Functionality  -----------------------------------------------------------------------------------
-        // public override void Update(float dt)
-        // {
-        //     _totalElapsedTime += dt;
-        //     _secondTimerElapsedTime += dt;
+        public override void Update(float dt)
+        {
+            base.Update(dt);
 
-        //     while(_secondTimerElapsedTime >= 1)
-        //     {
-        //         UpdateProducer?.Invoke(_secondTimerElapsedTime - 1, _totalElapsedTime);
-        //         _secondTimerElapsedTime -= 1;
+            updateIntervalElapsedTime += dt;
 
-        //         if (_secondTimerElapsedTime < 1)
-        //         {
-        //             _secondTimerElapsedTime = 0;
-        //         }
-        //     }
+            while(updateIntervalElapsedTime >= UpdateInterval)
+            {
+                UpdateProducer?.Invoke(updateIntervalElapsedTime - 1, TotalElapsedTime);
+                updateIntervalElapsedTime -= 1;
 
-        // }
+                if (updateIntervalElapsedTime < 1)
+                {
+                    updateIntervalElapsedTime = 0;
+                }
+            }
+
+        }
     }
 }

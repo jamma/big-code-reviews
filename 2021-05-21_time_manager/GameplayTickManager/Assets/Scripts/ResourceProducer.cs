@@ -30,6 +30,7 @@ namespace IdleStuff
 
         // Private Members  -------------------------------------------------------------------------------------------
         private float _totalItems = 0;
+        // private readonly string name = "";
 
         // Public Members  --------------------------------------------------------------------------------------------
         // public float dontDeclarePublicMembers;
@@ -49,11 +50,17 @@ namespace IdleStuff
         //         _somePrivateMember = value;
         //     }
         // }
+        public string Name { get; private set; }
         public float TotalItems { get; set; } = 0;
         public float ItemsPerTick { get; set; } = GameplayController.DefaultItemsPerTick;
         public int TotalUpdateCalls { get; set; } = 0;
 
         // C'tor & Init Methods  --------------------------------------------------------------------------------------
+        public ResourceProducer(string name)
+        {
+            Name = name;
+        }
+
         // public override void Initialize() {}
         // public override void Reinitialize() {}
 

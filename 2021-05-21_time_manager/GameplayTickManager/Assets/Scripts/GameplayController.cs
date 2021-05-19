@@ -51,9 +51,9 @@ namespace IdleStuff
 // UpdateIntervalManager
         // private SetIntervalManager setIntervalManager = new SetIntervalManager();
         // private RequestedIntervalManager requestedIntervalManager = new RequestedIntervalManager();
-        private UpdateIntervalManager setIntervalManager = new UpdateIntervalManager();
-        private UpdateIntervalManager requestedIntervalManager = new UpdateIntervalManager();
-        private ResourceProducer tickProducer = new ResourceProducer();
+        private SetIntervalManager setIntervalManager = new SetIntervalManager();
+        private RequestedIntervalManager requestedIntervalManager = new RequestedIntervalManager();
+        private ResourceProducer tickProducer = new ResourceProducer("Tick Producer");
         private float _currentTickElapsedTime = 0;
 
         // Public Members  --------------------------------------------------------------------------------------------

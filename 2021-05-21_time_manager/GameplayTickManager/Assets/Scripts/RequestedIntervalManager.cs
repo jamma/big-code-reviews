@@ -87,7 +87,7 @@ namespace IdleStuff
         public RequestedIntervalManager()
         {
             // var producer = new RequestedIntervalProducer();
-            Producer = new ResourceProducer();
+            Producer = new ResourceProducer("Requested Interval Producer");
 
             // Not a good way to handle this, just doing it for this code review
             // This will increase the number of updates the more items are created per tick.
