@@ -8,11 +8,46 @@
 // +-------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 
 using UnityEngine;
 
 namespace IdleStuff
 {
+    // +---------------------------------------------------------------------------------------------------------------
+    // + Class: SetIntervalProducer
+    // + Description:
+    // +    Insert Description Here
+    // +---------------------------------------------------------------------------------------------------------------
+    public class SetIntervalProducer : ResourceProducer
+    {
+        // Private Members  -------------------------------------------------------------------------------------------
+        private int ticksPerItem = GameplayController.DefaultTicksPerItem;
+        private int tickCooldown = GameplayController.DefaultTicksPerItem;
+
+        // Class Methods  ---------------------------------------------------------------------------------------------
+        public SetIntervalProducer() : base(UpdateIntervalType.Set)
+        {
+            // ticksPerItem = (int)Math.Round(1 / ItemsPerTick);
+            // tickCooldown = GameplayController.DefaultTicksPerItem;
+        }
+
+        public override void Update(float intervalTime)
+        {
+            base.Update(intervalTime);
+
+            tickCooldown -= 1;
+
+            if (tickCooldown <= 0)
+            {
+                TotalItems += 1;
+                tickCooldown = GameplayController.DefaultTicksPerItem;
+            }
+
+            PrintUpdateStats();
+        }
+    }
+
     // +---------------------------------------------------------------------------------------------------------------
     // + Class: SetIntervalManager
     // + Description:
@@ -21,54 +56,20 @@ namespace IdleStuff
     public class SetIntervalManager : UpdateIntervalManager
     {
         // Events & Delegates  ----------------------------------------------------------------------------------------
-        // public delegate void ZanzoObjectNotify(ZanzoObject res);
-        // public event ZanzoObjectNotify Activated;
-        // public delegate void UpdateNotify(float intervalTime, float totalElapsedTime);
-        // public event UpdateNotify UpdateProducer;
-        public delegate void UpdateNotify(float intervalTime, float totalElapsedTime);
+        public delegate void UpdateNotify(float intervalTime);
         public event UpdateNotify UpdateProducer;
-
-        // Static / Constants  ----------------------------------------------------------------------------------------
-        // public static readonly float UpdateIntervalSeconds = 1;
 
         // Private Members  -------------------------------------------------------------------------------------------
         private float updateIntervalElapsedTime = 0;
+        public SetIntervalProducer Producer { get; private set; }
 
-        // Public Members  --------------------------------------------------------------------------------------------
-        // public float dontDeclarePublicMembers;
-
-        // Inspector / Editor Properties  -----------------------------------------------------------------------------
-        // public string unlessTheyreEditorProperties;
-
-        // Properties  ------------------------------------------------------------------------------------------------
-        // public bool SomeProperty
-        // {
-        //     get
-        //     {
-        //         return _somePrivateMember;
-        //     }
-        //     set
-        //     {
-        //         _somePrivateMember = value;
-        //     }
-        // }
-        // public ResourceProducer Producer { get; } = null;
-        // public float TimeScale { get; set; } = 1;
-
-        // C'tor & Init Methods  --------------------------------------------------------------------------------------
-        // public override void Initialize() {}
-        // public override void Reinitialize() {}
-        public SetIntervalManager() : base()
+        // Class Methods  ---------------------------------------------------------------------------------------------
+        public SetIntervalManager()
         {
-            // base();
-            // Producer = new SetIntervalProducer();
-            Producer = new ResourceProducer("Set Interval Producer");
+            Producer = new SetIntervalProducer();
             UpdateProducer += Producer.Update;
-
-            // Producer.ItemsPerTick = 1 / 9F;
         }
 
-        // Component Functionality  -----------------------------------------------------------------------------------
         public override void Update(float dt)
         {
             base.Update(dt);
@@ -77,7 +78,7 @@ namespace IdleStuff
 
             while(updateIntervalElapsedTime >= UpdateInterval)
             {
-                UpdateProducer?.Invoke(updateIntervalElapsedTime - 1, TotalElapsedTime);
+                UpdateProducer?.Invoke(updateIntervalElapsedTime - 1);
                 updateIntervalElapsedTime -= 1;
 
                 if (updateIntervalElapsedTime < 1)

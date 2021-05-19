@@ -13,31 +13,63 @@ using UnityEngine;
 
 namespace IdleStuff
 {
-    // public class RequestedIntervalKey
-    // {
-    //     public float duration = 0;
-    //     public float elapsed = 0;
+    // +---------------------------------------------------------------------------------------------------------------
+    // + Class: RequestedIntervalProducer
+    // + Description:
+    // +    Insert Description Here
+    // +---------------------------------------------------------------------------------------------------------------
+    public class RequestedIntervalProducer : ResourceProducer
+    {
+        // Private Members  -------------------------------------------------------------------------------------------
+        // private int ticksPerItem = GameplayController.DefaultTicksPerItem;
+        // private int tickCooldown = 0;
 
-    //     public RequestedIntervalKey(float intervalDuration)
-    //     {
-    //         duration = intervalDuration;
-    //     }
+        // Class Methods  ---------------------------------------------------------------------------------------------
+        public RequestedIntervalProducer() : base(UpdateIntervalType.Requested)
+        {
+            // ticksPerItem = (int)Math.Round(1 / ItemsPerTick);
+            // tickCooldown = GameplayController.DefaultTicksPerItem;
+        }
 
-    //     public override int GetHashCode()
-    //     {
-    //         return duration.GetHashCode();
-    //     }
+        public override void Update(float intervalTime)
+        {
+            base.Update(intervalTime);
+            TotalItems += 1;
 
-    //     public override bool Equals(object obj)
-    //     {
-    //         return Equals(obj as RequestedIntervalKey);
-    //     }
+            PrintUpdateStats();
+        }
+    }
 
-    //     public bool Equals(RequestedIntervalKey key)
-    //     {
-    //         return duration == key.duration;
-    //     }
-    // }
+    // +---------------------------------------------------------------------------------------------------------------
+    // + Class: RequestedIntervalKey
+    // + Description:
+    // +    Insert Description Here
+    // +---------------------------------------------------------------------------------------------------------------
+    public class RequestedIntervalKey
+    {
+        public float duration = 0;
+        public float elapsed = 0;
+
+        public RequestedIntervalKey(float intervalDuration)
+        {
+            duration = intervalDuration;
+        }
+
+        public override int GetHashCode()
+        {
+            return duration.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as RequestedIntervalKey);
+        }
+
+        public bool Equals(RequestedIntervalKey key)
+        {
+            return duration == key.duration;
+        }
+    }
 
 
     // +---------------------------------------------------------------------------------------------------------------
@@ -47,119 +79,45 @@ namespace IdleStuff
     // +---------------------------------------------------------------------------------------------------------------
     public class RequestedIntervalManager : UpdateIntervalManager
     {
-        // Events & Delegates  ----------------------------------------------------------------------------------------
-        // public delegate void ZanzoObjectNotify(ZanzoObject res);
-        // public event ZanzoObjectNotify Activated;
-
-        // Static / Constants  ----------------------------------------------------------------------------------------
-        // public static readonly int SomeConstant = 0;
-
-        // Private Members  -------------------------------------------------------------------------------------------
-        // private bool _somePrivateMember;
-        // private Dictionary<RequestedIntervalKey, ResourceProducer> producerMap = new Dictionary<RequestedIntervalKey, ResourceProducer>();
-        // private float 
-        private float updateInterval = 0;
-        private float elapsedIntervalDuration = 0;
-        // private float
-        // Public Members  --------------------------------------------------------------------------------------------
-        // public float dontDeclarePublicMembers;
-
-        // Inspector / Editor Properties  -----------------------------------------------------------------------------
-        // public string unlessTheyreEditorProperties;
-
         // Properties  ------------------------------------------------------------------------------------------------
-        // public bool SomeProperty
-        // {
-        //     get
-        //     {
-        //         return _somePrivateMember;
-        //     }
-        //     set
-        //     {
-        //         _somePrivateMember = value;
-        //     }
-        // }
-        // public ResourceProducer Producer { get; } = null;
+        public Dictionary<RequestedIntervalKey, RequestedIntervalProducer> Producers { get; private set; } = new Dictionary<RequestedIntervalKey, RequestedIntervalProducer>();
 
-        // C'tor & Init Methods  --------------------------------------------------------------------------------------
-        // public override void Initialize() {}
-        // public override void Reinitialize() {}
+        // Class Methods  ---------------------------------------------------------------------------------------------
         public RequestedIntervalManager()
         {
-            // var producer = new RequestedIntervalProducer();
-            Producer = new ResourceProducer("Requested Interval Producer");
+            var producer = new RequestedIntervalProducer();
 
-            // Not a good way to handle this, just doing it for this code review
-            // This will increase the number of updates the more items are created per tick.
-            // Ideally this interval should not be based on how many items are created per tick
-            // var updateInterval = 1 / Producer.ItemsPerTick;
-            updateInterval = 1 / Producer.ItemsPerTick;
-
-            // AddIntervalListener(updateInterval, producer);
+            AddIntervalListener(GameplayController.DefaultTicksPerItem, producer);
         }
 
-        // public void AddIntervalListener(float intervalDuration, ResourceProducer producer)
-        // {
-        //     var key = new RequestedIntervalKey(intervalDuration);
-        //     // producerMap[key] = producer;
-        // }
+        public void AddIntervalListener(float intervalDuration, RequestedIntervalProducer producer)
+        {
+            var key = new RequestedIntervalKey(intervalDuration);
+            Producers[key] = producer;
+        }
 
-        // Component Functionality  -----------------------------------------------------------------------------------
-        // public void SomeFunc()
-        // {
-        // }
-        // public void Update(float dt)
-        // {
-        //     elapsedIntervalDuration += dt;
+        public override void Update(float dt)
+        {
+            base.Update(dt);
 
-        //     while(elapsedIntervalDuration >= 1)
-        //     {
-        //         // UpdateProducer?.Invoke(elapsedIntervalDuration - 1, 1000);
-        //         // elapsedIntervalDuration -= 1;
+            foreach (var producerMapEntry in Producers)
+            {
+                var key = producerMapEntry.Key;
+                var producer = producerMapEntry.Value;
 
-        //         // if (elapsedIntervalDuration < 1)
-        //         // {
-        //         //     elapsedIntervalDuration = 0;
-        //         // }
-        //     }
-        // }
+                key.elapsed += dt;
 
-        // Unity Life-Cycle Methods  ----------------------------------------------------------------------------------
-        // Order: https://docs.unity3d.com/Manual/ExecutionOrder.html
-        // void Awake()
-        // {
-        // }
+                while (key.elapsed > key.duration)
+                {
+                    key.elapsed -= key.duration;
+                    producer.Update(key.duration);
 
-        // void OnEnable()
-        // {
-        // }
-
-        // void OnDisable()
-        // {
-        // }
-
-        // void Start()
-        // {
-        // }
-
-        // void Update()
-        // {
-        // }
-
-        // void FixedUpdate()
-        // {
-        // }
-
-        // void LateUpdate()
-        // {
-        // }
-
-        // void OnApplicationQuit()
-        // {
-        // }
-
-        // void OnDisable()
-        // {
-        // }
+                    if (key.elapsed < key.duration)
+                    {
+                        key.elapsed = 0;
+                    }
+                }
+            }
+        }
     }
 }

@@ -8,11 +8,42 @@
 // +-------------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 
 using UnityEngine;
 
 namespace IdleStuff
 {
+    // +---------------------------------------------------------------------------------------------------------------
+    // + Class: ResourceProducer
+    // + Description:
+    // +    Insert Description Here
+    // +---------------------------------------------------------------------------------------------------------------
+    public class ResourceProducer
+    {
+        // Properties  ------------------------------------------------------------------------------------------------
+        public UpdateIntervalType UpdateType { get; private set; }
+        public float TotalItems { get; set; } = 0;
+        public int TotalUpdateCalls { get; set; } = 0;
+
+        // Class Methods  ---------------------------------------------------------------------------------------------
+        public ResourceProducer(UpdateIntervalType updateType)
+        {
+            UpdateType = updateType;
+        }
+
+        public virtual void Update(float intervalTime)
+        {
+            TotalUpdateCalls += 1;
+        }
+
+        public void PrintUpdateStats()
+        {
+            Debug.Log("ResourceProducer::Update() - type: " + UpdateType + " total items: " + TotalItems + " total update calls: " + TotalUpdateCalls);
+        }
+    }
+
+
     // +---------------------------------------------------------------------------------------------------------------
     // + Class: UpdateIntervalManager
     // + Description:
@@ -20,51 +51,11 @@ namespace IdleStuff
     // +---------------------------------------------------------------------------------------------------------------
     public class UpdateIntervalManager
     {
-        // Events & Delegates  ----------------------------------------------------------------------------------------
-        // public delegate void ZanzoObjectNotify(ZanzoObject res);
-        // public event ZanzoObjectNotify Activated;
-
-        // Static / Constants  ----------------------------------------------------------------------------------------
-        // public static readonly int SomeConstant = 0;
-
-
-        // Private Members  -------------------------------------------------------------------------------------------
-        // private float updateIntervalElapsedTime = 0;
-
-        // Public Members  --------------------------------------------------------------------------------------------
-        // public float dontDeclarePublicMembers;
-
-        // Inspector / Editor Properties  -----------------------------------------------------------------------------
-        // public string unlessTheyreEditorProperties;
-
-        // Properties  ------------------------------------------------------------------------------------------------
-        // public bool SomeProperty
-        // {
-        //     get
-        //     {
-        //         return _somePrivateMember;
-        //     }
-        //     set
-        //     {
-        //         _somePrivateMember = value;
-        //     }
-        // }
         public float UpdateInterval { get; set; } = 1;
         public float TotalElapsedTime { get; protected set; } = 0;
-        public ResourceProducer Producer { get; set; } = null;
-        // public float TimeScale { get; set; } = 1;
+        // public ResourceProducer Producer { get; set; } = null;
+        // public IReadOnlyList<ResourceProducer> Producers { get; protected set; }
 
-        // C'tor & Init Methods  --------------------------------------------------------------------------------------
-        // public override void Initialize() {}
-        // public override void Reinitialize() {}
-        // public UpdateIntervalManager()
-        // {
-        //     // Producer = new SetIntervalProducer();
-        //     // Producer = new ResourceProducer();
-        //     // Producer.ItemsPerTick = 1 / 9F;
-        // }
-
-        // Component Functionality  -----------------------------------------------------------------------------------
         public virtual void Update(float dt)
         {
             TotalElapsedTime += dt;
