@@ -31,12 +31,12 @@ namespace IdleStuff
             // tickCooldown = GameplayController.DefaultTicksPerItem;
         }
 
-        public override void Update(float intervalTime)
+        public override void Update(float ticksElapsed)
         {
-            base.Update(intervalTime);
+            base.Update(ticksElapsed);
             TotalItems += 1;
 
-            PrintUpdateStats();
+            // PrintUpdateStats();
         }
     }
 
@@ -50,9 +50,9 @@ namespace IdleStuff
         public float duration = 0;
         public float elapsed = 0;
 
-        public RequestedIntervalKey(float intervalDuration)
+        public RequestedIntervalKey(int requestedTickInterval)
         {
-            duration = intervalDuration;
+            duration = requestedTickInterval;
         }
 
         public override int GetHashCode()
@@ -87,35 +87,33 @@ namespace IdleStuff
         {
             var producer = new RequestedIntervalProducer();
 
-            AddIntervalListener(GameplayController.DefaultTicksPerItem, producer);
+            AddIntervalListener(GameplayController.TicksPerItem, producer);
         }
 
-        public void AddIntervalListener(float intervalDuration, RequestedIntervalProducer producer)
+        public void AddIntervalListener(int requestedTickInterval, RequestedIntervalProducer producer)
         {
-            var key = new RequestedIntervalKey(intervalDuration);
+            var key = new RequestedIntervalKey(requestedTickInterval);
             Producers[key] = producer;
         }
 
-        public override void Update(float dt)
+        public override void Update(float ticksElapsed)
         {
-            base.Update(dt);
+            // Debug.Log("RequestedIntervalManager::Update(" + ticksElapsed + ")");
 
+            // Loop through each producer (only one in this example)
             foreach (var producerMapEntry in Producers)
             {
                 var key = producerMapEntry.Key;
                 var producer = producerMapEntry.Value;
 
-                key.elapsed += dt;
+                // Update the elapsed ticks for this producer
+                key.elapsed += ticksElapsed;
 
+                // Keep looping until we've exhausted all tick interval updates
                 while (key.elapsed > key.duration)
                 {
-                    key.elapsed -= key.duration;
                     producer.Update(key.duration);
-
-                    if (key.elapsed < key.duration)
-                    {
-                        key.elapsed = 0;
-                    }
+                    key.elapsed -= key.duration;
                 }
             }
         }

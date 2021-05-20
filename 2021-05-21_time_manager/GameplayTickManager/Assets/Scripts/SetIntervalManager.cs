@@ -22,8 +22,9 @@ namespace IdleStuff
     public class SetIntervalProducer : ResourceProducer
     {
         // Private Members  -------------------------------------------------------------------------------------------
-        private int ticksPerItem = GameplayController.DefaultTicksPerItem;
-        private int tickCooldown = GameplayController.DefaultTicksPerItem;
+        private int ticksPerItem = GameplayController.TicksPerItem;
+        // private int tickCooldown = GameplayController.TicksPerItem;
+        private float currentElapsedTicks = 0;
 
         // Class Methods  ---------------------------------------------------------------------------------------------
         public SetIntervalProducer() : base(UpdateIntervalType.Set)
@@ -32,19 +33,21 @@ namespace IdleStuff
             // tickCooldown = GameplayController.DefaultTicksPerItem;
         }
 
-        public override void Update(float intervalTime)
+        public override void Update(float ticksElapsed)
         {
-            base.Update(intervalTime);
+            base.Update(ticksElapsed);
 
-            tickCooldown -= 1;
+            currentElapsedTicks += ticksElapsed;
 
-            if (tickCooldown <= 0)
+            if (currentElapsedTicks >= ticksPerItem)
             {
                 TotalItems += 1;
-                tickCooldown = GameplayController.DefaultTicksPerItem;
+                currentElapsedTicks -= ticksPerItem;
+                // tickCooldown = GameplayController.TicksPerItem;
+                // currentElapsedTicks -= ticksPerItem;
             }
 
-            PrintUpdateStats();
+            // PrintUpdateStats();
         }
     }
 
@@ -56,11 +59,12 @@ namespace IdleStuff
     public class SetIntervalManager : UpdateIntervalManager
     {
         // Events & Delegates  ----------------------------------------------------------------------------------------
-        public delegate void UpdateNotify(float intervalTime);
+        public delegate void UpdateNotify(float ticksElapsed);
         public event UpdateNotify UpdateProducer;
 
         // Private Members  -------------------------------------------------------------------------------------------
-        private float updateIntervalElapsedTime = 0;
+        private float tickUpdateInterval = 1;   // Update on every tick
+        private float ticksSinceLastUpdate = 0;
         public SetIntervalProducer Producer { get; private set; }
 
         // Class Methods  ---------------------------------------------------------------------------------------------
@@ -70,23 +74,18 @@ namespace IdleStuff
             UpdateProducer += Producer.Update;
         }
 
-        public override void Update(float dt)
+        public override void Update(float ticksElapsed)
         {
-            base.Update(dt);
+            // Debug.Log("SetIntervalManager::Update(" + ticksElapsed + ")");
+            ticksSinceLastUpdate += ticksElapsed;
 
-            updateIntervalElapsedTime += dt;
-
-            while(updateIntervalElapsedTime >= UpdateInterval)
+            // Accumulate ticks until we pass the update threshold,
+            // then keep invoking event as long as we're above update threshold
+            while(ticksSinceLastUpdate >= tickUpdateInterval)
             {
-                UpdateProducer?.Invoke(updateIntervalElapsedTime - 1);
-                updateIntervalElapsedTime -= 1;
-
-                if (updateIntervalElapsedTime < 1)
-                {
-                    updateIntervalElapsedTime = 0;
-                }
+                UpdateProducer?.Invoke(tickUpdateInterval);
+                ticksSinceLastUpdate -= tickUpdateInterval;
             }
-
         }
     }
 }

@@ -19,7 +19,7 @@ namespace IdleStuff
     // + Description:
     // +    Insert Description Here
     // +---------------------------------------------------------------------------------------------------------------
-    public class ResourceProducer
+    public abstract class ResourceProducer
     {
         // Properties  ------------------------------------------------------------------------------------------------
         public UpdateIntervalType UpdateType { get; private set; }
@@ -32,7 +32,8 @@ namespace IdleStuff
             UpdateType = updateType;
         }
 
-        public virtual void Update(float intervalTime)
+        // public virtual void Update(float intervalTime)
+        public virtual void Update(float ticksElapsed)
         {
             TotalUpdateCalls += 1;
         }
@@ -49,16 +50,18 @@ namespace IdleStuff
     // + Description:
     // +    Insert Description Here
     // +---------------------------------------------------------------------------------------------------------------
-    public class UpdateIntervalManager
+    public abstract class UpdateIntervalManager
     {
-        public float UpdateInterval { get; set; } = 1;
-        public float TotalElapsedTime { get; protected set; } = 0;
+        // public float UpdateInterval { get; set; } = 1;
+        // public float TotalElapsedTime { get; protected set; } = 0;
+        // public int TotalTicks { get; protected set; } = 0;
         // public ResourceProducer Producer { get; set; } = null;
         // public IReadOnlyList<ResourceProducer> Producers { get; protected set; }
 
-        public virtual void Update(float dt)
-        {
-            TotalElapsedTime += dt;
-        }
+        public abstract void Update(float ticksElapsed);
+        // {
+        //     TotalTicks += ticksElapsed;
+        //     // TotalElapsedTime += dt;
+        // }
     }
 }
