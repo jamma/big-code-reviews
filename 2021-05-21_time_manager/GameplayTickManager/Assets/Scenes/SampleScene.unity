@@ -251,4 +251,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   secondsPerTick: 1
-  timeScale: 10
+  tickScale: 1

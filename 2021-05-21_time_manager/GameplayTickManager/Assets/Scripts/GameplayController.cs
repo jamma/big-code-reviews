@@ -26,8 +26,8 @@ namespace IdleStuff
 
         // Private Members  -------------------------------------------------------------------------------------------
         [SerializeField] private float secondsPerTick = 1;
-        [SerializeField] [Range(0.1F, 20F)] private float timeScale = 1; // The scaled number of ticks sent to resource mgrs
-        // [SerializeField] [Range(0.1F, 20F)] private float timeScale = 0.5F;
+        [SerializeField] [Range(0.1F, 20F)] private float tickScale = 1; // The scaled number of ticks sent to resource mgrs
+        // [SerializeField] [Range(0.1F, 20F)] private float tickScale = 0.5F;
 
         private SetIntervalManager setIntervalManager = new SetIntervalManager();
         private RequestedIntervalManager requestedIntervalManager = new RequestedIntervalManager();
@@ -57,13 +57,13 @@ namespace IdleStuff
             if (currentTickElapsedTime > secondsPerTick)
             {
                 totalTicks += 1;
-                totalScaledTicks += timeScale;
+                totalScaledTicks += tickScale;
 
                 // Debug.Log("GameplayController::Update() - new tick, scaled ticks: " + scaledElapsedTicks + " total ticks: " + totalTicks);
 
-                setIntervalManager.Update(timeScale);
-                requestedIntervalManager.Update(timeScale);
-                tickIntervalManager.Update(timeScale);
+                setIntervalManager.Update(tickScale);
+                requestedIntervalManager.Update(tickScale);
+                tickIntervalManager.Update(tickScale);
 
                 currentTickElapsedTime = 0;
             }

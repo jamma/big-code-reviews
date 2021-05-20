@@ -68,6 +68,8 @@ namespace IdleStuff
     // +---------------------------------------------------------------------------------------------------------------
     public class RequestedIntervalManager : UpdateIntervalManager
     {
+        // This dict should actually have a list of producers per key, but I didn't feel like creating that for this example.
+        // Just putting this note here to explain why this dict setup doesn't exactly make complete sense in a general sense.
         public Dictionary<RequestedIntervalKey, RequestedIntervalProducer> Producers { get; private set; } = new Dictionary<RequestedIntervalKey, RequestedIntervalProducer>();
 
         public RequestedIntervalManager()
