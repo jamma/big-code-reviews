@@ -13,34 +13,6 @@ using UnityEngine;
 
 namespace IdleStuff
 {
-    // // +---------------------------------------------------------------------------------------------------------------
-    // // + Class: TickProducer
-    // // + Description:
-    // // +    Insert Description Here
-    // // +---------------------------------------------------------------------------------------------------------------
-    // public class TickProducer : ResourceProducer
-    // {
-    //     // Private Members  -------------------------------------------------------------------------------------------
-    //     // private int ticksPerItem = 0;
-    //     // private int tickCooldown = 0;
-
-    //     // C'tor & Init Methods  --------------------------------------------------------------------------------------
-    //     public TickProducer() : base(UpdateIntervalType.Tick)
-    //     {
-    //         // ticksPerItem = (int)Math.Round(1 / ItemsPerTick);
-    //         // tickCooldown = ticksPerItem;
-    //     }
-
-    //     public override void Update(float deltaTime)
-    //     {
-    //         base.Update(deltaTime);
-
-    //         TotalItems += deltaTime * GameplayController.DefaultItemsPerTick;
-
-    //         PrintUpdateStats();
-    //     }
-    // }
-
     // +---------------------------------------------------------------------------------------------------------------
     // + Class: GameplayController
     // + Description:
@@ -48,18 +20,14 @@ namespace IdleStuff
     // +---------------------------------------------------------------------------------------------------------------
     public class GameplayController : MonoBehaviour
     {
-        // Events & Delegates  ----------------------------------------------------------------------------------------
-        // public delegate void ZanzoObjectNotify(ZanzoObject res);
-        // public event ZanzoObjectNotify Activated;
-
         // Static / Constants  ----------------------------------------------------------------------------------------
         public static readonly int TicksPerItem = 9;
         public static readonly float ItemsPerTick = 1F / TicksPerItem;
 
         // Private Members  -------------------------------------------------------------------------------------------
         [SerializeField] private float secondsPerTick = 1;
-        // [SerializeField] [Range(0.1F, 20F)] private float timeScale = 1;
-        [SerializeField] [Range(0.1F, 20F)] private float timeScale = 0.5F;
+        [SerializeField] [Range(0.1F, 20F)] private float timeScale = 1; // The scaled number of ticks sent to resource mgrs
+        // [SerializeField] [Range(0.1F, 20F)] private float timeScale = 0.5F;
 
         private SetIntervalManager setIntervalManager = new SetIntervalManager();
         private RequestedIntervalManager requestedIntervalManager = new RequestedIntervalManager();
@@ -67,25 +35,6 @@ namespace IdleStuff
         private float currentTickElapsedTime = 0;
         private int totalTicks = 0;
         private float totalScaledTicks = 0;
-
-        // Public Members  --------------------------------------------------------------------------------------------
-        // public float dontDeclarePublicMembers;
-
-        // Inspector / Editor Properties  -----------------------------------------------------------------------------
-        // public string unlessTheyreEditorProperties;
-
-        // Properties  ------------------------------------------------------------------------------------------------
-        // public bool SomeProperty
-        // {
-        //     get
-        //     {
-        //         return _somePrivateMember;
-        //     }
-        //     set
-        //     {
-        //         _somePrivateMember = value;
-        //     }
-        // }
 
         // Class Methods  ---------------------------------------------------------------------------------------------
         public void Initialize()
@@ -95,30 +44,6 @@ namespace IdleStuff
         public void Clear()
         {
         }
-
-        // Set Interval Timer Methods  --------------------------------------------------------------------------------
-        // public void UpdateSetInterval(float deltaTime, float scaledDeltaTime)
-        // public void UpdateSetInterval(int ticksElapsed)
-        // {
-        //     setIntervalManager.Update(ticksElapsed);
-        // }
-
-        // // public void UpdateRequestedInterval(float deltaTime, float scaledDeltaTime)
-        // public void UpdateRequestedInterval(int ticksElapsed)
-        // {
-        //     requestedIntervalManager.Update(ticksElapsed);
-        // }
-
-        // // public void UpdateTick(float deltaTime, float scaledDeltaTime)
-        // public void UpdateTick(int ticksElapsed)
-        // {
-        //     // currentTickElapsedTime += scaledDeltaTime;
-        //     // if (currentTickElapsedTime >= TotalTickSeconds)
-        //     // {
-        //     //     tickProducer.Update(currentTickElapsedTime);
-        //     //     currentTickElapsedTime = 0;
-        //     // }
-        // }
 
         // Unity Life-Cycle Methods  ----------------------------------------------------------------------------------
         void Update()
@@ -131,7 +56,6 @@ namespace IdleStuff
             //       but for purposes of this code review, this crude calculation is fine.
             if (currentTickElapsedTime > secondsPerTick)
             {
-                // var scaledElapsedTicks = (int)(secondsPerTick * timeScale);
                 totalTicks += 1;
                 totalScaledTicks += timeScale;
 
@@ -143,12 +67,6 @@ namespace IdleStuff
 
                 currentTickElapsedTime = 0;
             }
-            // var deltaTime = Time.deltaTime;
-            // var scaledDeltaTime = deltaTime * timeScale;
-
-            // UpdateSetInterval(deltaTime, scaledDeltaTime);
-            // UpdateRequestedInterval(deltaTime, scaledDeltaTime);
-            // UpdateTick(deltaTime, scaledDeltaTime);
         }
     }
 }

@@ -9,8 +9,6 @@
 
 using System.Collections.Generic;
 
-using UnityEngine;
-
 namespace IdleStuff
 {
     // +---------------------------------------------------------------------------------------------------------------
@@ -20,16 +18,7 @@ namespace IdleStuff
     // +---------------------------------------------------------------------------------------------------------------
     public class RequestedIntervalProducer : ResourceProducer
     {
-        // Private Members  -------------------------------------------------------------------------------------------
-        // private int ticksPerItem = GameplayController.DefaultTicksPerItem;
-        // private int tickCooldown = 0;
-
-        // Class Methods  ---------------------------------------------------------------------------------------------
-        public RequestedIntervalProducer() : base(UpdateIntervalType.Requested)
-        {
-            // ticksPerItem = (int)Math.Round(1 / ItemsPerTick);
-            // tickCooldown = GameplayController.DefaultTicksPerItem;
-        }
+        public RequestedIntervalProducer() : base(UpdateIntervalType.Requested) {}
 
         public override void Update(float ticksElapsed)
         {
@@ -43,7 +32,7 @@ namespace IdleStuff
     // +---------------------------------------------------------------------------------------------------------------
     // + Class: RequestedIntervalKey
     // + Description:
-    // +    Insert Description Here
+    // +    Used as a key in the RequestedIntervalManager's map of producers
     // +---------------------------------------------------------------------------------------------------------------
     public class RequestedIntervalKey
     {
@@ -79,10 +68,8 @@ namespace IdleStuff
     // +---------------------------------------------------------------------------------------------------------------
     public class RequestedIntervalManager : UpdateIntervalManager
     {
-        // Properties  ------------------------------------------------------------------------------------------------
         public Dictionary<RequestedIntervalKey, RequestedIntervalProducer> Producers { get; private set; } = new Dictionary<RequestedIntervalKey, RequestedIntervalProducer>();
 
-        // Class Methods  ---------------------------------------------------------------------------------------------
         public RequestedIntervalManager()
         {
             var producer = new RequestedIntervalProducer();

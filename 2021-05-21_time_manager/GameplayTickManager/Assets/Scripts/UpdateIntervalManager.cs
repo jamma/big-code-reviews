@@ -32,7 +32,6 @@ namespace IdleStuff
             UpdateType = updateType;
         }
 
-        // public virtual void Update(float intervalTime)
         public virtual void Update(float ticksElapsed)
         {
             TotalUpdateCalls += 1;
@@ -52,16 +51,6 @@ namespace IdleStuff
     // +---------------------------------------------------------------------------------------------------------------
     public abstract class UpdateIntervalManager
     {
-        // public float UpdateInterval { get; set; } = 1;
-        // public float TotalElapsedTime { get; protected set; } = 0;
-        // public int TotalTicks { get; protected set; } = 0;
-        // public ResourceProducer Producer { get; set; } = null;
-        // public IReadOnlyList<ResourceProducer> Producers { get; protected set; }
-
         public abstract void Update(float ticksElapsed);
-        // {
-        //     TotalTicks += ticksElapsed;
-        //     // TotalElapsedTime += dt;
-        // }
     }
 }

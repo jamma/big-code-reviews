@@ -23,15 +23,10 @@ namespace IdleStuff
     {
         // Private Members  -------------------------------------------------------------------------------------------
         private int ticksPerItem = GameplayController.TicksPerItem;
-        // private int tickCooldown = GameplayController.TicksPerItem;
         private float currentElapsedTicks = 0;
 
         // Class Methods  ---------------------------------------------------------------------------------------------
-        public SetIntervalProducer() : base(UpdateIntervalType.Set)
-        {
-            // ticksPerItem = (int)Math.Round(1 / ItemsPerTick);
-            // tickCooldown = GameplayController.DefaultTicksPerItem;
-        }
+        public SetIntervalProducer() : base(UpdateIntervalType.Set) {}
 
         public override void Update(float ticksElapsed)
         {
@@ -43,8 +38,6 @@ namespace IdleStuff
             {
                 TotalItems += 1;
                 currentElapsedTicks -= ticksPerItem;
-                // tickCooldown = GameplayController.TicksPerItem;
-                // currentElapsedTicks -= ticksPerItem;
             }
 
             // PrintUpdateStats();
