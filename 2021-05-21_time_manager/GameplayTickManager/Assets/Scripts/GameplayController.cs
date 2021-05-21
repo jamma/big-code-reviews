@@ -10,6 +10,7 @@
 using System;
 
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace IdleStuff
 {
@@ -23,11 +24,18 @@ namespace IdleStuff
         // Static / Constants  ----------------------------------------------------------------------------------------
         public static readonly int TicksPerItem = 9;
         public static readonly float ItemsPerTick = 1F / TicksPerItem;
+        public const float MinTickScale = 0.1F;
+        public const float MaxTickScale = 20;
 
         // Private Members  -------------------------------------------------------------------------------------------
         [SerializeField] private float secondsPerTick = 1;
-        [SerializeField] [Range(0.1F, 20F)] private float tickScale = 1; // The scaled number of ticks sent to resource mgrs
-        // [SerializeField] [Range(0.1F, 20F)] private float tickScale = 0.5F;
+        [SerializeField] [Range(MinTickScale, MaxTickScale)] private float tickScale = 1; // The scaled number of ticks sent to resource mgrs
+
+        [SerializeField] private Text tickScaleValue;
+        [SerializeField] private Slider tickScaleSlider;
+        [SerializeField] private ResourceProducerStats setIntervalStats;
+        [SerializeField] private ResourceProducerStats requestedIntervalStats;
+        [SerializeField] private ResourceProducerStats tickStats;
 
         private SetIntervalManager setIntervalManager = new SetIntervalManager();
         private RequestedIntervalManager requestedIntervalManager = new RequestedIntervalManager();
@@ -39,13 +47,66 @@ namespace IdleStuff
         // Class Methods  ---------------------------------------------------------------------------------------------
         public void Initialize()
         {
+            setIntervalStats.Initialize(setIntervalManager.Producer);
+
+            // Yup this is hack-ish, but I know there's only one in here
+            foreach (var reqProd in requestedIntervalManager.Producers.Values)
+            {
+                requestedIntervalStats.Initialize(reqProd);
+                break;
+            }
+
+            tickStats.Initialize(tickIntervalManager.Producer);
+            SetTickScale(tickScale);
         }
 
         public void Clear()
         {
         }
 
+        public void UpdateResourceProducerStats()
+        {
+            setIntervalStats.UpdateStats();
+            requestedIntervalStats.UpdateStats();
+            tickStats.UpdateStats();
+        }
+
+        public void OnTickScaleSliderChanged()
+        {
+            SetTickScaleFromSlider();
+        }
+
+        private void SetTickScale(float value)
+        {
+            // Debug.Log("GameplayController::SetTickScale()");
+
+            value = Math.Min(MaxTickScale, value);
+            value = Math.Max(MinTickScale, value);
+
+            tickScale = value;
+            tickScaleValue.text = tickScale.ToString();
+
+            var tickScaleRangeDelta = MaxTickScale - MinTickScale;
+            var sliderValue = tickScale - MinTickScale;
+            sliderValue = sliderValue / tickScaleRangeDelta;
+            tickScaleSlider.value = sliderValue;
+        }
+
+        private void SetTickScaleFromSlider()
+        {
+            // Debug.Log("GameplayController::SetTickScaleFromSlider()");
+            var tickScaleRangeDelta = MaxTickScale - MinTickScale;
+            tickScale = (tickScaleSlider.value * tickScaleRangeDelta) + MinTickScale;
+
+            tickScaleValue.text = tickScale.ToString();
+        }
+
         // Unity Life-Cycle Methods  ----------------------------------------------------------------------------------
+        void Awake()
+        {
+            Initialize();
+        }
+
         void Update()
         {
             // Debug.Log("GameplayController::Update()");
@@ -66,6 +127,8 @@ namespace IdleStuff
                 tickIntervalManager.Update(tickScale);
 
                 currentTickElapsedTime = 0;
+
+                UpdateResourceProducerStats();
             }
         }
     }

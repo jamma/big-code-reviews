@@ -28,7 +28,7 @@ namespace IdleStuff
 
             TotalItems += ticksElapsed * GameplayController.ItemsPerTick;
 
-            PrintUpdateStats();
+            // PrintUpdateStats();
         }
     }
 
